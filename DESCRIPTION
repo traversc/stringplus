@@ -1,0 +1,11 @@
+Package: stringplus
+Type: Package
+Title: Combine Strings Using '+' and '*'
+Version: 1.0
+Date: 2024-05-01
+Author: Travers Ching
+Maintainer: Travers Ching <traversc@gmail.com>
+Imports: glue
+Description: Combine strings using '+' and '*' for convienence.
+License: GPL (>= 2)
+RoxygenNote: 7.3.1
