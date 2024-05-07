@@ -2,7 +2,7 @@
 
 # stringplus
 
-Combine strings using `+` and `*` for convienence.
+Combine strings using builtin infix for convenience.
 
 ### Install
 ```
@@ -11,41 +11,44 @@ remotes::install_github("traversc/stringplus")
 
 ### Examples
 
-Load library
+Using the `&` operator concatenates two strings.
 ```
-library(stringplus, warn=FALSE)
-```
-
-Using the `+` operator simply concatenates two strings.
-```
-"hello" + "world"
+"hello" & "world"
 # output: "helloworld"
 ```
-This is equivalent to `paste0("hello", "world")`.
 
-Using the `*` operator calls `sprintf` or `glue::glue` depending on whether the second argument is named.
+Using the `|` operator formats a string using `sprintf` or `glue::glue` depending on whether the second argument is named.
 ```
+# Using sprintf
+"C:/folder/%s/file.txt" | "subfolder"
+
+# Using glue::glue
+"C:/folder/{var}/file.txt" | c(var="subfolder")
+
+# Output: "C:/folder/subfolder/file.txt"
+```
+
+### Using a different infix operator
+You can change the infix operators in the above examples by calling `set_string_ops`.
+```
+set_string_ops(concat = "+", format = "*", permanent = FALSE)
+"hello" + "world"
+# output: "helloworld"
+
 "C:/folder/%s/file.txt" * "subfolder"
 # Output: "C:/folder/subfolder/file.txt"
 ```
-This is equivalent to `sprintf("C:/folder/%s/file.txt", "subfolder")`.
-
-Alternatively:
-```
-"C:/folder/{var}/file.txt" * c(var="subfolder")
-# Output: "C:/folder/subfolder/file.txt"
-```
-This is equivalent to `glue::glue("C:/folder/{var}/file.txt", var="subfolder")`.
+Setting `permanent = TRUE` will make these settings persist between sessions.
 
 ### Details
 
-`+` and `*` operators are base R functions that are hard coded to return an error on character vector inputs. 
+Many infix operators in base R functions are hard coded to return an error on character vector inputs. 
 This is unlike the behavior for custom classes, where they can be modified using the R dispatch system.
 
-While these operators can't be modified for character input, they CAN be overwritten. In `stringplus`, the `+`
-operator is overwritten to first check if its input is a character vector; if so it concatenates the two arguments,
-if not it falls back to the base R functions. `*` is modified similarly. 
+While these operators can't be modified for string input, they CAN be overwritten. In `stringplus`, the built-in operators are modified to check if the first argument is a character vector; if so it concatenates (or formats) the two arguments,
+if not it falls back to the built-in operator.
 
+Example: using `+` as the concat operator will modify the base R function.
 ```
 `+` <- function(e1, e2) {
   if(is.character(e1)) paste0(e1,e2)
@@ -55,10 +58,9 @@ if not it falls back to the base R functions. `*` is modified similarly.
 
 This overridden function should not interfere with normal dispatch. 
 ```
-library(stringplus, warn=FALSE)
+set_string_ops(concat = "+", format = "*", permanent = FALSE)
 
 1 + 2 # output: 3
-
 1 * 2 # output: 2
 
 setClass("Zoo", slots=list(animals="numeric"))
@@ -79,9 +81,9 @@ Will this package be on CRAN?
 * Probably not
 
 Isn't there a performance cost?
-* Yes, there is a small performance cost around 1 microsecond per `+` or `*` op
+* Yes, there is a small performance cost around 1-2 microsecond per op
 
-Wouldn't this interfere with class dispatch using `+` or `*` methods?
+Wouldn't this interfere with class dispatch methods?
 * No, see examples
 
 Could this break something else?

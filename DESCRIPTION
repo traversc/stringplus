@@ -1,11 +1,11 @@
 Package: stringplus
 Type: Package
-Title: Combine Strings Using '+' and '*'
-Version: 1.0
-Date: 2024-05-01
+Title: Combine Strings Using built-in infix operators
+Version: 1.1
+Date: 2024-05-07
 Author: Travers Ching
 Maintainer: Travers Ching <traversc@gmail.com>
-Imports: glue
-Description: Combine strings using '+' and '*' for convienence.
+Imports: glue, rappdirs, rlang
+Description: Combine strings using infix operators (e.g. `&` and `|`) for convienence.
 License: GPL (>= 2)
 RoxygenNote: 7.3.1
