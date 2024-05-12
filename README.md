@@ -45,20 +45,15 @@ Setting `permanent = TRUE` will make these settings persist between sessions.
 Many infix operators in base R functions are hard coded to return an error on character vector inputs. 
 This is unlike the behavior for custom classes, where they can be modified using the R dispatch system.
 
-While these operators can't be modified for string input, they CAN be overwritten. In `stringplus`, the built-in operators are modified to check if the first argument is a character vector; if so it concatenates (or formats) the two arguments,
-if not it falls back to the built-in operator.
-
-Example: using `+` as the concat operator will modify the base R function.
-```
-`+` <- function(e1, e2) {
-  if(is.character(e1)) paste0(e1,e2)
-  else .Primitive("+")(e1,e2)
-}
-```
+While these operators can't be modified for string input, they CAN be overwritten. In `stringplus`, the built-in operators are overwritten to check if the first argument is a character vector; if so it concatenates (or formats) the two arguments, if not it falls back to the built-in operator.
 
 This overridden function should not interfere with normal dispatch. 
+
 ```
 set_string_ops(concat = "+", format = "*", permanent = FALSE)
+library(ggplot2)
+
+ggplot(mtcars, aes(x = mpg, y = cyl)) + geom_point()
 
 1 + 2 # output: 3
 1 * 2 # output: 2
@@ -76,9 +71,6 @@ sandiego + columbus
 ```
 
 ### Notes
-
-Will this package be on CRAN? 
-* Probably not
 
 Isn't there a performance cost?
 * Yes, there is a small performance cost around 1-2 microsecond per op

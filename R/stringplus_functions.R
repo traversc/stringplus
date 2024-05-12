@@ -4,13 +4,13 @@ format_op <- ""
 allowed_ops <- c("$", "@", "^", "*", "/", "-", "+", "&", "|", "&&", "||")
 
 set_string_ops_session <- function(concat = "&", format = "|") {
-  ns <- getNamespace("base")
-  rlang::env_unlock(ns)
-  unlockBinding(concat, ns)
-  unlockBinding(format, ns)
-  assign(concat, string_concat_op, envir = ns, inherits=FALSE)
-  assign(format, string_format_op, envir = ns, inherits=FALSE)
-  rlang::env_lock(ns)
+  # ns <- getNamespace("base")
+  # rlang::env_unlock(ns)
+  # unlockBinding(concat, ns)
+  # unlockBinding(format, ns)
+  assign(concat, string_concat_op, envir = globalenv(), inherits=FALSE)
+  assign(format, string_format_op, envir = globalenv(), inherits=FALSE)
+  # rlang::env_lock(ns)
   
   ns <- getNamespace("stringplus")
   rlang::env_unlock(ns)
