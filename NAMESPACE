@@ -1,5 +1,3 @@
 export("set_string_ops")
 export("string_concat_op")
 export("string_format_op")
-export("concat_op")
-export("format_op")

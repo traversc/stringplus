@@ -1,24 +1,35 @@
-concat_op <- ""
-format_op <- ""
-
 allowed_ops <- c("$", "@", "^", "*", "/", "-", "+", "&", "|", "&&", "||")
 
 set_string_ops_session <- function(concat = "&", format = "|") {
-  # ns <- getNamespace("base")
+  
+  # trying to assign in namespace doesn't work
+  # ns <- getNamespace("stringplus")
   # rlang::env_unlock(ns)
-  # unlockBinding(concat, ns)
-  # unlockBinding(format, ns)
-  assign(concat, string_concat_op, envir = globalenv(), inherits=FALSE)
-  assign(format, string_format_op, envir = globalenv(), inherits=FALSE)
+  # clear_string_ops(ns)
+  # assign(concat, string_concat_op, envir = ns, inherits=FALSE)
+  # assign(format, string_format_op, envir = ns, inherits=FALSE)
+  # namespaceExport(ns, concat)
+  # namespaceExport(ns, format)
   # rlang::env_lock(ns)
   
-  ns <- getNamespace("stringplus")
-  rlang::env_unlock(ns)
-  unlockBinding("concat_op", ns)
-  unlockBinding("format_op", ns)
-  assign("concat_op", concat, envir = ns, inherits=FALSE)
-  assign("format_op", format, envir = ns, inherits=FALSE)
-  rlang::env_lock(ns)
+  # assigning ops to globalenv directly makes it risky as its easy to accidentally remove them
+  # e.g. via rm(list=ls())
+  # Instead assign to custom env and attach it to globalenv as a hidden environment
+  
+  # first check if already assigned and remove it
+  if(".stringplus" %in% search()) {
+    detach(".stringplus", character.only=TRUE)
+  }
+  env <- new.env(parent = globalenv())
+  environment(string_concat_op) <- env
+  assign(concat, string_concat_op, envir = env, inherits=FALSE)
+  environment(string_format_op) <- env
+  assign(format, string_format_op, envir = env, inherits=FALSE)
+  assign("concat_op", concat, envir = env, inherits=FALSE)
+  assign("format_op", format, envir = env, inherits=FALSE)
+  
+  assign(".stringplus", env, envir = globalenv())
+  attach(get(".stringplus", envir = globalenv()), pos = 2, name = ".stringplus", warn.conflicts=FALSE)
 }
 
 store_string_ops <- function(concat = "&", format = "|") {

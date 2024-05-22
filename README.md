@@ -2,7 +2,7 @@
 
 # stringplus
 
-Combine strings using builtin infix for convenience.
+Combine strings using builtin infix operators.
 
 ### Install
 ```
